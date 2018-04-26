@@ -1,10 +1,11 @@
 package googlesearch.sabel.com.wegepunkt_app;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
-public class WegePunkt {
+public class WegePunkt implements Serializable{
     private Date timestamp;
     private double latitude;
     private double longitude;
@@ -46,7 +47,7 @@ public class WegePunkt {
     public String toString() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-        return simpleDateFormat.format(timestamp) + "\t" + latitude + "\t"+ longitude;
+        return simpleDateFormat.format(timestamp) + "\n" + latitude + "\t" + longitude;
     }
 
     @Override

@@ -15,7 +15,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,12 +26,15 @@ public class MainActivity extends AppCompatActivity {
     private Button btnWPShow;
     private LocationManager locationManager;
     private boolean isGPSEnabled;
+    private WegepunktRepo wegepunktRepo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         isGPSEnabled = false;
+        wegepunktRepo = new WegepunktRepo();
 
         btnWPSave = findViewById(R.id.btnWPSave);
         btnWPSave.setEnabled(false);
@@ -38,17 +44,19 @@ public class MainActivity extends AppCompatActivity {
         btnWPSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Meins","SaveButton");
+                Log.d("Meins", "SaveButton");
                 if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    Log.d("Meins","Check fehlgeschlagen");
+                    Log.d("Meins", "Check fehlgeschlagen");
                     return;
                 }
 
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 6000, 10, new LocationListener() {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 0, new LocationListener() {
                     @Override
                     public void onLocationChanged(Location location) {
                         WegePunkt wegePunkt = new WegePunkt(new Date(), location.getLatitude(), location.getLongitude());
-                        Log.d("Meins",wegePunkt.toString());
+                        wegepunktRepo.add(wegePunkt);
+                        Log.d("Meins", wegePunkt.toString());
+
                     }
 
                     @Override
@@ -69,9 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                if(location != null) {
+                if (location != null) {
                     WegePunkt wegePunkt = new WegePunkt(new Date(), location.getLatitude(), location.getLongitude());
-                    Log.d("Meins",wegePunkt.toString());
+                    Log.d("Meins", wegePunkt.toString());
+                    wegepunktRepo.add(wegePunkt);
                 }
 
             }
@@ -81,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ListViewActivity.class);
+                intent.putExtra("wegepunkte", (WegepunktRepo) wegepunktRepo);
                 startActivity(intent);
             }
         });
@@ -88,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void initLocationManager(){
+    private void initLocationManager() {
         locationManager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
         isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
@@ -96,13 +106,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            if(shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)){
-                Toast.makeText(this,"Ich brauch diese Berechtigung ganz dringend!",Toast.LENGTH_SHORT).show();
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Toast.makeText(this, "Ich brauch diese Berechtigung ganz dringend!", Toast.LENGTH_SHORT).show();
             }
 
             requestPermission();
-        }else {
+        } else {
             activateSaveLocation();
         }
     }
@@ -110,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 4711 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == 4711 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             activateSaveLocation();
         }
     }
@@ -121,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         requestPermissions(permissons, 4711);
     }
 
-    private void activateSaveLocation(){
+    private void activateSaveLocation() {
         this.initLocationManager();
         btnWPSave.setEnabled(this.isGPSEnabled);
     }
