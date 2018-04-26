@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Wegepunkt-App</string>
+    <string name="btnWPSave">WP-Speichern</string>
+    <string name="btnWPShow">WP-Anzeigen</string>
+</resources>
