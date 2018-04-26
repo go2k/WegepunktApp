@@ -28,6 +28,10 @@ public class WegepunktRepo {
         return wegePunkte.size();
     }
 
+    public List<WegePunkt> getWegePunkte() {
+        return wegePunkte;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

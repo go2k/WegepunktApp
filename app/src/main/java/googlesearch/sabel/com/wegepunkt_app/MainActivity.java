@@ -1,6 +1,7 @@
 package googlesearch.sabel.com.wegepunkt_app;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -46,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 6000, 10, new LocationListener() {
                     @Override
                     public void onLocationChanged(Location location) {
-
+                        WegePunkt wegePunkt = new WegePunkt(new Date(), location.getLatitude(), location.getLongitude());
+                        Log.d("Meins",wegePunkt.toString());
                     }
 
                     @Override
@@ -78,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
         btnWPShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(MainActivity.this, ListViewActivity.class);
+                startActivity(intent);
             }
         });
 
