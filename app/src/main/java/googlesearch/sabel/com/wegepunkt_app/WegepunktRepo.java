@@ -1,9 +1,10 @@
 package googlesearch.sabel.com.wegepunkt_app;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WegepunktRepo {
+public class WegepunktRepo implements Serializable{
     private List<WegePunkt> wegePunkte;
 
     public WegepunktRepo() {
@@ -37,5 +38,9 @@ public class WegepunktRepo {
         }
 
         return sb.toString();
+    }
+
+    public List<WegePunkt> getWegePunkte() {
+        return wegePunkte;
     }
 }
