@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btnWPSave;
     private Button btnWPShow;
+    private Button btnRoute;
     private LocationManager locationManager;
     private boolean isGPSEnabled;
     private WegepunktRepo wegepunkte;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         btnWPSave = findViewById(R.id.btnWPSave);
         btnWPSave.setEnabled(false);
         btnWPShow = findViewById(R.id.btnWPShow);
+        btnRoute = findViewById(R.id.btnRoute);
 
         wegepunkte = new WegepunktRepo();
 
@@ -92,6 +95,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btnRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(wegepunkte.size() > 1){
+
+                    WegePunkt startPunkt = wegepunkte.get(0);
+                    WegePunkt endPunkt = wegepunkte.get(1);
+
+                    Uri uri = Uri.parse("https://www.google.com/maps/dir/?api=1&origin=" +
+                            startPunkt.getLatitude() + "," + startPunkt.getLongitude() +
+                            "&destination=" + endPunkt.getLatitude() + "," + endPunkt.getLongitude());
+
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW,uri);
+
+                    Log.d("Meins",uri.toString());
+                    startActivity(browserIntent);
+                }
+
+
+            }
+        });
 
     }
 
